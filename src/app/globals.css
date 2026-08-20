@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --ink: #24253d;
+  --ink-soft: #54506c;
+  --paper: #f6f9ff;
+  --paper-dim: #eef3fa;
+  --paper-raised: #ffffff;
+
+  --moss: #272bbc;
+  --moss-light: #4a50d0;
+  --moss-pale: #eef2ff;
+
+  --brass: #272bbc;
+  --brass-light: #6b72df;
+
+  --line: rgb(36 37 61 / 10%);
+  --line-strong: rgb(36 37 61 / 18%);
+  --line-on-dark: rgb(255 255 255 / 16%);
+  --line-on-dark-strong: rgb(255 255 255 / 30%);
+
+  --header-h: 5.5rem;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-paper-raised: var(--paper-raised);
+  --color-moss: var(--moss);
+  --color-moss-light: var(--moss-light);
+  --color-moss-pale: var(--moss-pale);
+  --color-brass: var(--brass);
+  --color-brass-light: var(--brass-light);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-line-on-dark: var(--line-on-dark);
+  --color-line-on-dark-strong: var(--line-on-dark-strong);
+
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --container-content: 1600px;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --animate-marquee: marquee 32s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                 */
+/* Wrapped in Tailwind's `base` layer so `utilities` (text-*, bg-*,    */
+/* etc.) always wins the cascade — an unlayered rule here would beat   */
+/* every utility class regardless of specificity or source order.     */
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01" 1, "cv01" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--moss);
+    outline-offset: 3px;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+}
+
+/* Thin, editorial scrollbar */
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--paper);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border: 3px solid var(--paper);
+    border-radius: 999px;
+  }
+}
+
+/* Hide scrollbar for horizontal-scroll showcase track */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll-reveal primitives                                            */
+/* Hidden-by-default state is CSS-only (no FOUC) and only applies when */
+/* the user has not requested reduced motion. JS animates it back in.  */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(var(--reveal-y, 28px));
+  }
+
+  [data-clip-reveal] {
+    clip-path: inset(0 0 var(--clip-y, 100%) 0);
+  }
+
+  [data-scale-reveal] {
+    transform: scale(var(--scale-from, 1.08));
+  }
+
+  [data-line-reveal] {
+    transform: translateY(var(--line-y, 110%));
+  }
+
+  /* Hero slider — the outer frame carries the full slide motion while the
+     inner image lags behind at a reduced rate, producing a parallax effect
+     between the frame and its contents during the transition. */
+  [data-hero-slide-track] {
+    transform: translateX(var(--slide-x, 0%));
+  }
+
+  [data-hero-slide-parallax] {
+    transform: scale(var(--parallax-scale, 1.15)) translateX(var(--parallax-x, 0%));
+  }
+}
+
+/* Always-on (not motion-gated): keeps every slide but the active one out of
+   the way regardless of animation support, so a slider degrades to a plain
+   single view under reduced motion instead of stacking every slide at once. */
+[data-hero-slide][data-active="false"] {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
